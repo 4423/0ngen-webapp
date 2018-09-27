@@ -18,7 +18,7 @@
     <modal :data="selectedAlbum" v-if="showModal" @close="showModal = false"></modal>
     
     <ul class="grid" id="albums">
-      <li v-for="item in sortedItems" :key="item.Album">
+      <li v-for="item in sortedItems" :key="item.CoverArtPath">
         <a @click="() => {selectedAlbum = item; showModal = true}">
           <div id="coverart">
             <img :src="item.CoverArtPath" v-if="item.CoverArtPath != null">
