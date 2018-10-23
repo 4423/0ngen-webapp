@@ -2,7 +2,7 @@
   <div>
     <form class="form-horizontal" id="sort">
       <div class="form-inline">
-        <select class="form-control" v-model="selectedSortKey" style="margin-right: 20px;">
+        <select class="form-control" v-model="selectedSortKey">
           <option v-for="item in sortKeys" :key="item.id" :value="item.id">
             {{ item.name }}
           </option>
@@ -12,6 +12,7 @@
             {{ item.name }}
           </option>
         </select>
+        <input class="form-control" type="text" v-model="searchKeyword" placeholder="Search">
       </div>
     </form>
 
@@ -61,7 +62,8 @@ export default {
         { id: 0, name: 'Ascending',  value: 1 },
         { id: 1, name: 'Descending', value: -1 }
       ],
-      selectedSortOrder: 1
+      selectedSortOrder: 1,
+      searchKeyword: ""
     }
   },
   mounted () {
@@ -73,7 +75,11 @@ export default {
     sortedItems: function () {
       var f = this.sortKeys[this.selectedSortKey].func
       var k = this.sortOrders[this.selectedSortOrder].value
-      return this.database.slice().sort((a, b) => {
+      function isContain(str, key) { return String(str).indexOf(key) != -1}
+      return this.database.filter(e => {
+        return isContain(e.Album, this.searchKeyword)
+            || isContain(e.AlbumArtist, this.searchKeyword)
+      }).sort((a, b) => {
         var x = f(a)
         var y = f(b)
         return (x === y ? 0 : x > y ? 1 : -1) * k
@@ -87,9 +93,10 @@ export default {
 #sort {
   margin: 30px 40px 20px;
 }
-#sort select {
+#sort .form-control {
   font-size: 0.75em;
   height: 35px;
+  margin-right: 20px;
 }
 
 .grid {
