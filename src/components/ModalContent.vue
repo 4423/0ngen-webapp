@@ -5,6 +5,7 @@
         <img :src="data.CoverArtPath" v-if="data.CoverArtPath != null">
         <img src="../assets/NoImage.png" v-else>
       </div>
+      <button type="button" v-on:click="download()" id="all-down" class="btn btn-outline-secondary btn-sm">download all</button>
     </div>
     <div class="col-md-7">
       <h1>{{ data.Album }}</h1>
@@ -50,6 +51,14 @@ export default {
   methods: {
     sasurl (path) {
       return domain + path + sas
+    },
+    download () {
+      var alist = document.querySelectorAll("#track a")
+      var i
+      for (i=0; i<alist.length; i++) {
+        var href = alist[i].getAttribute('href')
+        window.open(href)
+      }
     }
   }
 }
@@ -108,5 +117,13 @@ table td {
   height: auto;
   max-width: 102%;
   max-height: 102%;
+}
+
+#all-down {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 10px;
 }
 </style>
