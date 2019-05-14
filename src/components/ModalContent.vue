@@ -17,6 +17,7 @@
             <th class="col-xs-1"></th>
             <th class="col-xs-10"></th>
             <th class="col-xs-1"></th>
+            <th class="col-xs-1"></th>
           </tr>
         </thead>
         <tbody>
@@ -29,8 +30,13 @@
               <div id="artist">{{ track.Artist }}</div>
             </td>
             <td>
-              <a :href="sasurl(track.BlobPath)">
+              <a id="link" :href="sasurl(track.BlobPath)">
                 link
+              </a>
+            </td>
+            <td>
+              <a class="share-button" v-on:click="share(sasurl(track.BlobPath), track, data);">
+                <font-awesome-icon icon="share-alt-square" />
               </a>
             </td>
           </tr>
@@ -42,6 +48,7 @@
 
 <script>
 import Config from "../Config.vue"
+import axios from 'axios';
 
 const domain = Config.data().domain
 const sas = Config.data().sas
@@ -53,12 +60,22 @@ export default {
       return domain + path + sas
     },
     download () {
-      var alist = document.querySelectorAll("#track a")
+      var alist = document.querySelectorAll("#track #link")
       var i
       for (i=0; i<alist.length; i++) {
         var href = alist[i].getAttribute('href')
         window.open(href)
       }
+    },
+    share(url, track, album) {
+      axios.post(Config.data().shareApiUrl, {
+        url: url,
+        title: track.Title,
+        artist: track.Artist,
+        tracknum: track.TrackNumber,
+        album: album.Album
+      })
+      .then(alert('共有するよ～'))
     }
   }
 }
@@ -125,5 +142,12 @@ table td {
   align-items: center;
   margin: 0 auto;
   margin-top: 10px;
+}
+
+.share-button svg {
+  color: #56bb56;
+}
+.share-button svg:hover {
+  color: #72df72;
 }
 </style>
